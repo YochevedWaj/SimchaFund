@@ -1,0 +1,51 @@
+﻿@model ContributionsViewModel
+@if (!String.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert alert-success alert-dismissible show" role="alert">
+        <span>@Model.Message</span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+<form method="post" action="/simchas/updatesimcha">
+    <input type="hidden" name="simchaId" value="@Model.SimchaID" />
+    <h1>Contributors for the @Model.SimchaName</h1>
+    <table class="table table-hover table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Contribute</th>
+                <th>Name</th>
+                <th>Balance</th>
+                <td>Always Include</td>
+                <th>Amount</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @for (int i = 0; i < Model.Contributors.Count; i++)
+            {
+                <input type="hidden" name="contributors[@i].ID" value="@Model.Contributors[i].ID" />
+                <tr>
+                    <td>
+                        <input type="checkbox" class="form-control" name="contributors[@i].Include" @(Model.Contributors[i].Amount > 0 ? "checked" : "") value="true" />
+                    </td>
+                    <td>@Model.Contributors[i].FirstName @Model.Contributors[i].LastName</td>
+                    <td>@Model.Contributors[i].Balance.ToString("C")</td>
+                    <td style="text-align: center;">
+                        @if (Model.Contributors[i].AlwaysInclude)
+                        {
+                            <span style="font-size: 25px;" class="oi oi-check"></span>
+                        }
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="contributors[@i].amount" value="@(Model.Contributors[i].Amount > 0 ? Model.Contributors[i].Amount : 5)" />
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+
+    </table>
+    <button class="btn btn-danger">Update</button>
+</form>
